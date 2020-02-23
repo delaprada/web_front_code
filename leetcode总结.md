@@ -206,6 +206,198 @@ var maxArea = function(height) {
 
 
 
+## 环形链表
+
+给定一个链表，判断链表中是否有环。
+
+为了表示给定链表中的环，我们使用整数 pos 来表示链表尾连接到链表中的位置（索引从 0 开始）。 如果 pos 是 -1，则在该链表中没有环。
+
+ ```
+示例 1：
+
+输入：head = [3,2,0,-4], pos = 1
+输出：true
+解释：链表中有一个环，其尾部连接到第二个节点。
+ ```
+
+![img](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2018/12/07/circularlinkedlist.png)
+
+```
+示例 2：
+
+输入：head = [1,2], pos = 0
+输出：true
+解释：链表中有一个环，其尾部连接到第一个节点。
+```
+
+![img](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2018/12/07/circularlinkedlist_test2.png)
+
+
+
+```
+示例 3：
+
+输入：head = [1], pos = -1
+输出：false
+解释：链表中没有环。
+```
+
+![img](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2018/12/07/circularlinkedlist_test3.png)
+
+
+
+
+
+思路：
+
+- 环形链表题一般使用双指针法，这里可以使用快慢指针法。慢指针每次只前进一位，快指针每次前进两位，就像环形跑道上跑得快的选手必定能追上跑道上跑得慢的选手一样。如果能追上说明是环行链表。可以通过判断快指针和快指针的next指针是否为null来判断这是否为环行链表。
+- 也可以用indexOf方法，像数组去重一样
+
+
+
+题解：
+
+```js
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val) {
+ *     this.val = val;
+ *     this.next = null;
+ * }
+ */
+
+/**
+ * @param {ListNode} head
+ * @return {boolean}
+ */
+var hasCycle = function(head) {
+    //快慢指针法，可以联想在环形跑道上快跑者始终会追上慢跑者
+    if(head===null||head.next===null){
+        return false;
+    }
+    // var res=[];
+    // var cur=head;
+    // while(cur){
+    //     if(res.indexOf(cur)===-1){
+    //         res.push(cur);
+    //     }
+    //     else{
+    //         return true;
+    //     }
+    //     cur=cur.next;
+    // }
+    // return false;
+    var slow=head;
+    var fast=head.next;
+    while(slow!==fast){
+        if(fast===null||fast.next===null){
+            return false;
+        }
+        slow=slow.next;
+        fast=fast.next.next;
+    }
+    return true;
+};
+```
+
+
+
+
+
+## 环形链表||
+
+给定一个链表，返回链表开始入环的第一个节点。 如果链表无环，则返回 null。
+
+为了表示给定链表中的环，我们使用整数 pos 来表示链表尾连接到链表中的位置（索引从 0 开始）。 如果 pos 是 -1，则在该链表中没有环。
+
+说明：不允许修改给定的链表。
+
+ ```
+示例 1：
+
+输入：head = [3,2,0,-4], pos = 1
+输出：tail connects to node index 1
+解释：链表中有一个环，其尾部连接到第二个节点。
+ ```
+
+![img](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2018/12/07/circularlinkedlist.png)
+
+
+
+```
+示例 2：
+
+输入：head = [1,2], pos = 0
+输出：tail connects to node index 0
+解释：链表中有一个环，其尾部连接到第一个节点。
+```
+
+![img](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2018/12/07/circularlinkedlist_test2.png)
+
+
+
+```
+示例 3：
+
+输入：head = [1], pos = -1
+输出：no cycle
+解释：链表中没有环。
+```
+
+![img](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2018/12/07/circularlinkedlist_test3.png)
+
+
+
+
+
+思路：
+
+快慢指针是用于判断是否链表是环状，但是快指针和慢指针相遇的地方并不一定是链表的入口。所以可以使用indexOf方法，找到第一个重复的节点，就是入口。
+
+
+
+题解：
+
+```js
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val) {
+ *     this.val = val;
+ *     this.next = null;
+ * }
+ */
+
+/**
+ * @param {ListNode} head
+ * @return {ListNode}
+ */
+var detectCycle = function(head) {
+    if(head===null||head.next===null){
+        return null;
+    }
+    var res=[];
+    var cur=head;
+    while(cur){
+        if(res.indexOf(cur)===-1){
+            res.push(cur);
+        }
+        else{
+            return cur;
+        }
+        cur=cur.next;
+    }
+    return null;
+};
+```
+
+
+
+
+
+
+
+
+
 
 
 ## 两数之和
@@ -547,6 +739,239 @@ var a=41;
 var b=3;
 console.log(yosef(41,3)+1);  //+1是因为0序号对应第一个人
 ```
+
+
+
+## 最长公共前缀
+
+编写一个函数来查找字符串数组中的最长公共前缀。
+
+如果不存在公共前缀，返回空字符串 ""。
+
+```
+示例 1:
+
+输入: ["flower","flow","flight"]
+输出: "fl"
+```
+
+
+
+```
+示例 2:
+
+输入: ["dog","racecar","car"]
+输出: ""
+解释: 输入不存在公共前缀。
+```
+
+
+
+思路：
+
+先求出数组中最短字符串的长度，因为最长公共前缀不会超过这个长度。然后两个for循环，依次比较。
+
+
+
+题解：
+
+```js
+/**
+ * @param {string[]} strs
+ * @return {string}
+ */
+var longestCommonPrefix = function(strs) {
+    if(strs.length===0){
+        return "";
+    }
+    var res=[];
+    var length=strs.length;
+    var len1=strs[0].length;
+    for(var i=0;i<length;++i){
+        if(strs[i].length<len1){
+            len1=strs[i].length;
+        }
+    }
+
+    for(var i=0;i<len1;++i){
+        res.push(strs[0][i]);
+        for(var j=1;j<length;++j){
+            if(strs[j][i]!==strs[0][i]){
+                res.pop();
+                return res.join("");
+            }
+        }
+    }
+    return res.join("");
+};
+```
+
+
+
+
+
+## 二叉搜索树的最近公共祖先
+
+给定一个二叉搜索树, 找到该树中两个指定节点的最近公共祖先。
+
+百度百科中最近公共祖先的定义为：“对于有根树 T 的两个结点 p、q，最近公共祖先表示为一个结点 x，满足 x 是 p、q 的祖先且 x 的深度尽可能大（一个节点也可以是它自己的祖先）。”
+
+例如，给定如下二叉搜索树:  root = [6,2,8,0,4,7,9,null,null,3,5]
+
+ ![img](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2018/12/14/binarysearchtree_improved.png)
+
+```
+示例 1:
+
+输入: root = [6,2,8,0,4,7,9,null,null,3,5], p = 2, q = 8
+输出: 6 
+解释: 节点 2 和节点 8 的最近公共祖先是 6。
+```
+
+
+
+```
+示例 2:
+
+输入: root = [6,2,8,0,4,7,9,null,null,3,5], p = 2, q = 4
+输出: 2
+解释: 节点 2 和节点 4 的最近公共祖先是 2, 因为根据定义最近公共祖先节点可以为节点本身。
+```
+
+ 
+
+说明:
+
+    所有节点的值都是唯一的。
+    p、q 为不同节点且均存在于给定的二叉搜索树中。
+
+
+
+思路：
+
+因为是二叉搜索树，所以如果两个节点的值中一个节点值比当前根节点的值要大，一个节点值比当前根节点的值要小，则当前根节点的值就是最近公共祖先节点。如果都比当前根节点小，则要去递归左节点（即都在左子树）；如果都比当前根节点大，则要去递归右节点（即都在右子树）。
+
+
+
+题解：
+
+```js
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val) {
+ *     this.val = val;
+ *     this.left = this.right = null;
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @param {TreeNode} p
+ * @param {TreeNode} q
+ * @return {TreeNode}
+ */
+var lowestCommonAncestor = function F(root, p, q) {
+    var parentVal=root.val;
+    if((p.val<parentVal&&q.val>parentVal)||(p.val>parentVal&&q.val<parentVal)||p.val===parentVal||q.val===parentVal){
+        return root;
+    }
+    if(p.val<parentVal&&q.val<parentVal){
+        return F(root.left,p,q);
+    }
+    if(p.val>parentVal&&q.val>parentVal){
+        return F(root.right,p,q);
+    }
+};
+```
+
+
+
+
+
+## 二叉树的最近公共祖先
+
+给定一个二叉树, 找到该树中两个指定节点的最近公共祖先。
+
+百度百科中最近公共祖先的定义为：“对于有根树 T 的两个结点 p、q，最近公共祖先表示为一个结点 x，满足 x 是 p、q 的祖先且 x 的深度尽可能大（一个节点也可以是它自己的祖先）。”
+
+例如，给定如下二叉树:  root = [3,5,1,6,2,0,8,null,null,7,4]
+
+![img](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2018/12/15/binarytree.png)
+
+ ```
+示例 1:
+
+输入: root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 1
+输出: 3
+解释: 节点 5 和节点 1 的最近公共祖先是节点 3。
+ ```
+
+
+
+```
+示例 2:
+
+输入: root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 4
+输出: 5
+解释: 节点 5 和节点 4 的最近公共祖先是节点 5。因为根据定义最近公共祖先节点可以为节点本身。
+```
+
+
+
+说明:
+
+    所有节点的值都是唯一的。
+    p、q 为不同节点且均存在于给定的二叉树中。
+
+
+
+思路：
+
+递归左右子树，如果在左右子树都有找到节点的话，说明当前结点就是最近公共祖先；如果只在左边找到节点，那说明都在左子树，递归左子树；如果只在右边找到节点，那说明都在右子树，递归右子树。
+
+
+
+```js
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val) {
+ *     this.val = val;
+ *     this.left = this.right = null;
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @param {TreeNode} p
+ * @param {TreeNode} q
+ * @return {TreeNode}
+ */
+
+var lowestCommonAncestor = function find(root, p, q) {
+    if(root==null){
+        return null;
+    }
+    if(p==root||q==root){
+        return root;
+    }
+    var left=find(root.left,p,q);
+    var right=find(root.right,p,q);
+    if(left!==null&&right!==null){
+        return root;
+    }
+    return left===null? right:left;
+};
+```
+
+
+
+**注意这两题的不同点：第一题中是通过将两个节点的值与当前结点的值比较大小，来去判断是递归左节点还是右节点；第二题是通过递归去知道两个节点是在当前节点的左子树还是右子树，来去判断是递归左节点还是右节点。因为二叉搜索树可以直接通过值去知道两个节点在当前节点的左子树还是右子树，但是二叉树则不行，所以需要多做两次递归操作。**
+
+
+
+
+
+
+
+
 
 
 
