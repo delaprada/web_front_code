@@ -625,6 +625,81 @@ console.log(bigNumAdd(a,b));
 
 
 
+## 字符串相乘
+
+给定两个以字符串形式表示的非负整数 num1 和 num2，返回 num1 和 num2 的乘积，它们的乘积也表示为字符串形式。
+
+```
+示例 1:
+输入: num1 = "2", num2 = "3"
+输出: "6"
+
+示例 2:
+输入: num1 = "123", num2 = "456"
+输出: "56088"
+说明：
+
+num1 和 num2 的长度小于110。
+num1 和 num2 只包含数字 0-9。
+num1 和 num2 均不以零开头，除非是数字 0 本身。
+不能使用任何标准库的大数类型（比如 BigInteger）或直接将输入转换为整数来处理。
+```
+
+
+
+思路：
+
+优化竖式法，结合两数相乘时的位置规律。
+
+- 乘数`num1`位数为M，被乘数`num2`位数为N，`num1*num2`结果`res`最大总位数为M+N。
+- `num1[i]*num2[j]`的结果为`tmp`（位数为两位，“`0x`”或者“`xy`”的形式，其第一位位于`res[i+j]`，第二位位于`res[i+j+1]`）。
+
+![img](https://pic.leetcode-cn.com/171cad48cd0c14f565f2a0e5aa5ccb130e4562906ee10a84289f12e4460fe164-image.png)
+
+比如2的index i=1,4的index j=0，它们两个的乘积则第一位是在`index[i+j]`（1）上，第二位是在`index[i+j+1]`（2）上。我们可以通过累加每位index上的值来得到每一位的结果，然后在将每位拼接起来。
+
+
+
+题解：
+
+```js
+/**
+ * @param {string} num1
+ * @param {string} num2
+ * @return {string}
+ */
+var multiply = function(num1, num2) {
+    num1=num1.split("");
+    num2=num2.split("");
+    var res=[];
+    for(var i=0;i<num1.length+num2.length;++i){
+        res[i]=0;
+    }
+    for(var i=num2.length-1;i>=0;i--){
+        var n1=num2[i];
+        for(var j=num1.length-1;j>=0;j--){
+            var n2=num1[j];
+            var temp=res[i+j+1]+n1*n2;
+            res[i+j+1]=temp%10;
+            //+=是因为要累加之前的结果，res[i+j+1]是=号是因为上面temp计算中已经加了res[i+j+1]
+            res[i+j]+=Math.floor(temp/10); 
+        }
+    }
+    for(var i=0;i<res.length-1;i++){
+        if(res[i]==0){
+            res.splice(i,1);
+            i--;
+        }
+        else{
+            break;
+        }
+    }
+    return res.join("");
+};
+```
+
+
+
 
 
 ## 二分查找

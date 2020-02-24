@@ -640,6 +640,128 @@ var longestPalindrome = function(s) {
 
 
 
+## 回文数
+
+判断一个整数是否是回文数。回文数是指正序（从左向右）和倒序（从右向左）读都是一样的整数。
+
+```
+示例 1:
+
+输入: 121
+输出: true
+
+示例 2:
+
+输入: -121
+输出: false
+解释: 从左向右读, 为 -121 。 从右向左读, 为 121- 。因此它不是一个回文数。
+
+示例 3:
+
+输入: 10
+输出: false
+解释: 从右向左读, 为 01 。因此它不是一个回文数。
+```
+
+
+
+思路：
+
+回文数这题不难，主要是JavaScript中取模是和C++一样，但是做除法的时候JavaScript是可以有小数的，所以要使用Math.floor()。
+
+
+
+题解：
+
+```js
+/**
+ * @param {number} x
+ * @return {boolean}
+ */
+var isPalindrome = function(x) {
+    if(x<0){
+        return false;
+    }
+    if(x==0){
+        return true;
+    }
+    var res=[];
+    var val=x;
+    while(x){
+        res.push(x%10);
+        x=Math.floor(x/10);
+    }
+    res=Number(res.join(""));
+    if(res==val){
+        return true;
+    }
+    else{
+        return false;
+    }
+};
+```
+
+
+
+
+
+## 删除排序数组的重复项
+
+给定一个排序数组，你需要在原地删除重复出现的元素，使得每个元素只出现一次，返回移除后数组的新长度。
+
+不要使用额外的数组空间，你必须在原地修改输入数组并在使用 O(1) 额外空间的条件下完成。
+
+```
+示例 1:
+
+给定数组 nums = [1,1,2], 
+
+函数应该返回新的长度 2, 并且原数组 nums 的前两个元素被修改为 1, 2。 
+
+你不需要考虑数组中超出新长度后面的元素。
+示例 2:
+
+给定 nums = [0,0,1,1,1,2,2,3,3,4],
+
+函数应该返回新的长度 5, 并且原数组 nums 的前五个元素被修改为 0, 1, 2, 3, 4。
+
+你不需要考虑数组中超出新长度后面的元素。
+```
+
+说明:
+
+为什么返回数值是整数，但输出的答案是数组呢?
+
+请注意，输入数组是以“引用”方式传递的，这意味着在函数里修改输入数组对于调用者是可见的。
+
+
+
+思路：
+
+这题可以用splice方法。不过注意使用splice方法的时候数组的大小也会发生改变，所以i要--。
+
+
+
+题解：
+
+```js
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+var removeDuplicates = function(nums) {
+    for(var i=1;i<nums.length;++i){
+        if(nums[i]===nums[i-1]){
+            nums.splice(i,1);
+            i--;
+        }
+    }
+    return nums.length;
+};
+```
+
+
+
 
 
 ## 买卖股票的最佳时机||
@@ -964,6 +1086,89 @@ var lowestCommonAncestor = function find(root, p, q) {
 
 
 **注意这两题的不同点：第一题中是通过将两个节点的值与当前结点的值比较大小，来去判断是递归左节点还是右节点；第二题是通过递归去知道两个节点是在当前节点的左子树还是右子树，来去判断是递归左节点还是右节点。因为二叉搜索树可以直接通过值去知道两个节点在当前节点的左子树还是右子树，但是二叉树则不行，所以需要多做两次递归操作。**
+
+
+
+
+
+## 搜索旋转的排序数组
+
+假设按照升序排序的数组在预先未知的某个点上进行了旋转。
+
+( 例如，数组 [0,1,2,4,5,6,7] 可能变为 [4,5,6,7,0,1,2] )。
+
+搜索一个给定的目标值，如果数组中存在这个目标值，则返回它的索引，否则返回 -1 。
+
+你可以假设数组中不存在重复的元素。
+
+你的算法时间复杂度必须是 **O(log n)** 级别。
+
+```
+示例 1:
+输入: nums = [4,5,6,7,0,1,2], target = 0
+输出: 4
+
+示例 2:
+输入: nums = [4,5,6,7,0,1,2], target = 3
+输出: -1
+```
+
+
+
+思路：
+
+这题的难点在于时间复杂度要是O(logn)级别的，可以联想，在查找元素的时候什么时候会是O(logn)级别的呢？可以想到是二分查找（折半查找）。但是由于数组是部分有序的，所以我们不能简单的通过比较target与mid元素的大小来判断是查找左边还是右边，我们要先判断哪边是有序的。
+
+判断有序的方式：比较nums[left]和nums[mid]的大小，如果nums[left]>nums[mid]也就是说左边是无序的，反之则有序。
+
+
+
+题解：
+
+```js
+/**
+ * @param {number[]} nums
+ * @param {number} target
+ * @return {number}
+ */
+
+//其实就是在二分法的基础上加上了判断左右升降序问题，因为数组现在是打乱了一下，直接判断是无法找到的
+//题目中说明是log(n)复杂度算法而且是要找到某个数的话明显是二分法的思路
+var search = function(nums, target) {
+    var left=0;
+    var right=nums.length-1;
+    var mid=left+Math.floor((right-left)/2);
+    while(left<=right){
+        if(nums[mid]===target){
+            return mid;
+        }
+        //左边如果是升序的话怎么判断
+        if(nums[left]<=nums[mid]){
+            if(target>=nums[left]&&target<=nums[mid]){
+                right=mid-1;
+            }
+            else{
+                left=mid+1;
+            }
+        }
+        //右边如果是升序的话怎么判断
+        else{
+            if(target<=nums[right]&&target>=nums[mid]){
+                left=mid+1;
+            }
+            else{
+                right=mid-1;
+            }
+        }
+        mid=Math.floor((right+left)/2);
+    }
+    return -1;
+};
+```
+
+
+
+
 
 
 
