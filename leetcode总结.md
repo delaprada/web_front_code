@@ -1091,6 +1091,67 @@ var lowestCommonAncestor = function find(root, p, q) {
 
 
 
+## 全排列
+
+给定一个没有重复数字的序列，返回其所有可能的全排列。
+
+示例:
+
+```
+输入: [1,2,3]
+输出:
+[
+  [1,2,3],
+  [1,3,2],
+  [2,1,3],
+  [2,3,1],
+  [3,1,2],
+  [3,2,1]
+]
+```
+
+
+
+思路：
+
+通过循环+递归来实现。
+
+<img src="C:\Users\alice\AppData\Roaming\Typora\typora-user-images\image-20200225105215378.png" alt="image-20200225105215378" style="zoom: 33%;" />
+
+当你执行permutation(result,abc,0,3)的时候，回去递归permutation(result,abc,1,3)，执行permutation(result,abc,1,3)的时候，又会进入循环执行递归permutation(result,abc,2,3)，执行permutation(result,abc,2,3)的时候又会进入递归permutation(result,abc,3,3)，然后因为i++之后变为3,3不小于字符串的大小，所以就会将这个字符串push到结果当中。
+
+整个算法的关键就是swap函数，将两个不同的位上的数进行交换。
+
+
+
+```c++
+class Solution {
+public:
+    void permutation(vector<vector<int>>& res, vector<int> nums, int index, int len){
+        if(index==len){
+            res.push_back(nums);
+        }
+        for(int i=index;i<len;++i){
+            if(i!=index&&nums[i]==nums[index]) continue; //如果两位上的数是一样的话，就不用进行交换了
+            swap(nums[i],nums[index]);
+            permutation(res,nums,index+1,len);
+        }
+    }
+
+    vector<vector<int>> permute(vector<int>& nums) {
+        vector<vector<int>> res;
+        int len=nums.size();
+        permutation(res,nums,0,len);
+        return res;
+    }
+    
+};
+```
+
+
+
+
+
 ## 搜索旋转的排序数组
 
 假设按照升序排序的数组在预先未知的某个点上进行了旋转。
@@ -1167,6 +1228,241 @@ var search = function(nums, target) {
 ```
 
 
+
+## 螺旋矩阵
+
+给定一个包含 m x n 个元素的矩阵（m 行, n 列），请按照顺时针螺旋顺序，返回矩阵中的所有元素。
+
+```
+示例 1:
+输入:
+[
+ [ 1, 2, 3 ],
+ [ 4, 5, 6 ],
+ [ 7, 8, 9 ]
+]
+输出: [1,2,3,6,9,8,7,4,5]
+
+示例 2:
+输入:
+[
+  [1, 2, 3, 4],
+  [5, 6, 7, 8],
+  [9,10,11,12]
+]
+输出: [1,2,3,4,8,12,11,10,9,5,6,7]
+```
+
+
+
+思路：
+
+需要维护四个变量left，right，top，down，执行四轮循环，将数据push到结果数组中。因为它是螺旋矩阵，所以我们每轮循环需要对其中一个变量进行++或者--，控制输出的数据。
+
+
+
+题解：
+
+```c++
+class Solution {
+public:
+    vector<int> spiralOrder(vector<vector<int>>& matrix) {
+        vector<int> res;
+        //判断为空这个条件不能漏掉
+        if(matrix.empty()||matrix[0].empty()){
+            return res;
+        }
+        int left=0;
+        int right=matrix[0].size()-1;
+        int top=0;
+        int down=matrix.size()-1;
+        while(left<=right&&top<=down){
+            for(int i=left;i<=right;i++){
+                res.push_back(matrix[top][i]);
+            }
+            top++;  //++之后，那下一轮循环就会从第二行开始，防止重复输出
+            if(top>down){
+                break;
+            }
+            for(int j=top;j<=down;++j){
+                res.push_back(matrix[j][right]);
+            }
+            right--;
+            if(left>right){
+                break;
+            }
+            for(int k=right;k>=left;k--){
+                res.push_back(matrix[down][k]);
+            }
+            down--;
+            if(top>down){
+                break;
+            }
+            for(int t=down;t>=top;t--){
+                res.push_back(matrix[t][left]);
+            }
+            left++;
+            if(left>right){
+                break;
+            }
+        }
+        return res;
+    }
+};
+```
+
+
+
+## 螺旋矩阵||
+
+给定一个正整数 n，生成一个包含 1 到 n2 所有元素，且元素按顺时针顺序螺旋排列的正方形矩阵。
+
+```
+示例:
+
+输入: 3
+输出:
+[
+ [ 1, 2, 3 ],
+ [ 8, 9, 4 ],
+ [ 7, 6, 5 ]
+]
+```
+
+
+
+思路：
+
+这题的思路和上面一体一样，重点是结果数组的初始化。vector如何声明二维数组：
+
+```
+vector<vector<int>> res(n,vector<int>(n));
+```
+
+二维数组，n行，每行是一个大小为n的vector。
+
+
+
+题解：
+
+```c++
+#include <iostream>
+using namespace std;
+
+class Solution {
+public:
+    vector<vector<int>> generateMatrix(int n) {
+        vector<vector<int>> res(n,vector<int>(n));
+        int count=1;
+        int left=0;
+        int right=n-1;
+        int top=0;
+        int down=n-1;
+        while(left<=right&&top<=down){
+            for(int i=left;i<=right;++i){
+                res[top][i]=count++;
+            }
+            top++;
+            for(int j=top;j<=down;j++){
+                res[j][right]=count++;
+            }
+            right--;
+            for(int k=right;k>=left;k--){
+                res[down][k]=count++;
+            }
+            down--;
+            for(int t=down;t>=top;t--){
+                res[t][left]=count++;
+            }
+            left++;
+        }
+        return res;
+    }
+};
+```
+
+
+
+## 旋转链表
+
+给定一个链表，旋转链表，将链表每个节点向右移动 k 个位置，其中 k 是非负数。
+
+```js
+示例 1:
+输入: 1->2->3->4->5->NULL, k = 2
+输出: 4->5->1->2->3->NULL
+解释:
+向右旋转 1 步: 5->1->2->3->4->NULL
+向右旋转 2 步: 4->5->1->2->3->NULL
+
+示例 2:
+输入: 0->1->2->NULL, k = 4
+输出: 2->0->1->NULL
+解释:
+向右旋转 1 步: 2->0->1->NULL
+向右旋转 2 步: 1->2->0->NULL
+向右旋转 3 步: 0->1->2->NULL
+向右旋转 4 步: 2->0->1->NULL
+```
+
+
+
+思路：
+
+做题时很容易想到的做法是，每轮都找到最末尾的节点，然后将这个节点之前的节点指向null，然后将这个节点指向头结点。但是如果k很大，那就做了很多无用功，因为会执行很多重复的操作。我们只需要求出整个链表最终的结果就可以了。
+
+我们的做法是：先将最末尾的节点指向头结点，形成环形链表，因为最后的头结点应该是第(n-k%n)个结点，最后的尾结点应该是第(n-k%n-1)个结点。
+
+
+
+题解：
+
+```c++
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* rotateRight(ListNode* head, int k) {
+        if(head==NULL||head->next==NULL){
+            return head;
+        }
+        ListNode* cur=head;
+        int n=1;  //求链表的长度
+        while(cur->next!=NULL){
+            cur=cur->next;
+            n++;
+        }
+        ListNode* temp=cur;
+        temp->next=head;  //形成环形链表
+        ListNode* new_tail=head;
+        for(int i=0;i<(n-k%n-1);i++){
+            new_tail=new_tail->next;
+        }
+        ListNode* new_head=new_tail->next;
+        new_tail->next=NULL;
+        return new_head;
+
+        // 超时方法
+        // while(k--){
+        //     ListNode* cur=head;
+        //     while(cur->next->next!=NULL){
+        //         cur=cur->next;
+        //     }
+        //     ListNode* temp=cur->next;
+        //     cur->next=NULL;
+        //     temp->next=head;
+        //     head=temp;
+        // }
+        // return head;
+    }
+};
+```
 
 
 
