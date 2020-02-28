@@ -149,7 +149,9 @@ var decodeString = function(s) {
 
 怎么接雨水：
 
-<img src="./img/2.png" alt="img" style="zoom:50%;" />
+![img](./img/2.PNG)
+
+
 
 
 
