@@ -512,19 +512,140 @@ public:
 
 
 
+## [括号生成](https://leetcode-cn.com/problems/generate-parentheses/)
+
+给出 n 代表生成括号的对数，请你写出一个函数，使其能够生成所有可能的并且有效的括号组合。
+
+例如，给出 n = 3，生成结果为：
+
+```
+[
+  "((()))",
+  "(()())",
+  "(())()",
+  "()(())",
+  "()()()"
+]
+```
+
+
+
+思路：
+
+回溯法，递归思路。代码挺简单的，但是要想到用这种方法有难度。
+
+<img src="./img/3.png" alt="img" style="zoom:33%;" />
+
+
+
+题解：
+
+```js
+/**
+ * @param {number} n
+ * @return {string[]}
+ */
+var generateParenthesis = function(n) {
+    //回溯法
+    var ans=[];
+    generate(ans,"",0,0,n);
+    return ans;
+};
+
+function generate(ans,str,open,close,n){
+    if(str.length==n*2){
+        ans.push(str);
+    }
+    if(open<n){
+        generate(ans,str+"(",open+1,close,n);
+    }
+    if(close<open){
+        generate(ans,str+")",open,close+1,n);
+    }
+}
+```
 
 
 
 
 
+## [排序链表](https://leetcode-cn.com/problems/sort-list/)
+
+在 O(n log n) 时间复杂度和常数级空间复杂度下，对链表进行排序。
+
+```
+示例 1:
+
+输入: 4->2->1->3
+输出: 1->2->3->4
+
+示例 2:
+
+输入: -1->5->3->4->0
+输出: -1->0->3->4->5
+```
 
 
 
+思路：
+
+对链表进行排序的最好方法就是归并排序，复杂度也是O(nlogn)。这题用递归做的话没办法实现常数空间复杂度，不过递归更好理解一些。
+
+1. 快慢指针，快指针用于判断是否到链表末尾，慢指针用于找链表中点
+2. 递归左右链表
+3. 归并
 
 
 
+![Picture2.png](https://pic.leetcode-cn.com/8c47e58b6247676f3ef14e617a4686bc258cc573e36fcf67c1b0712fa7ed1699-Picture2.png)
 
 
+
+题解：
+
+```js
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val) {
+ *     this.val = val;
+ *     this.next = null;
+ * }
+ */
+/**
+ * @param {ListNode} head
+ * @return {ListNode}
+ */
+var sortList = function(head) {
+    //使用递归办法空间复杂度没办法是O(1)
+    if(head==null||head.next==null){
+        return head;
+    }
+    var slow=head;
+    var fast=head.next;
+    while(fast!=null&&fast.next!=null){
+        slow=slow.next;
+        fast=fast.next.next;
+    }
+    var temp=slow.next;
+    var left=sortList(head);
+    var right=sortList(temp);
+    var h=new ListNode(0);
+    var res=h;
+    while(left!=null&&right!=null){
+        if(left.val<right.val){
+            h.next=left;
+            left=left.next;
+        }
+        else{
+            h.next=right;
+            right=right.next;
+        }
+        h=h.next;
+    }
+    h.next=left!=null?left:right;
+    return res.next;
+};
+```
 
 
 
