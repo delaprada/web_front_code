@@ -517,6 +517,83 @@ var lengthOfLongestSubstring = function(s) {
 
 
 
+## [面试题57 - II. 和为s的连续正数序列](https://leetcode-cn.com/problems/he-wei-sde-lian-xu-zheng-shu-xu-lie-lcof/)
+
+输入一个正整数 target ，输出所有和为 target 的连续正整数序列（至少含有两个数）。
+
+序列内的数字由小到大排列，不同序列按照首个数字从小到大排列。
+
+
+
+示例 1：
+
+```
+输入：target = 9
+输出：[[2,3,4],[4,5]]
+```
+
+
+
+示例 2：
+
+```
+输入：target = 15
+输出：[[1,2,3,4,5],[4,5,6],[7,8]]
+```
+
+
+
+思路：
+
+这种关于连续序列的题目的一个思路是可以用滑动窗口方式来解题。当前子序和如果比target要小的话，右指针++（也就是滑动窗口右结界向右移动），当前子序如果比target要大的话，左指针++（也就是滑动窗口左结界向右移动）。
+
+需要注意的是，题目没有说这个正整数序列的范围，是需要我们去推断的。因为是求连续的和，而且至少含有两个数，那其中一个最大的数也只能是Math.ceil(target/2)。
+
+
+
+题解：
+
+```js
+/**
+ * @param {number} target
+ * @return {number[][]}
+ */
+var findContinuousSequence = function(target) {
+    var res=[];
+    var ans=[];
+    var count=1;
+    for(var j=0;j<Math.ceil(target/2);j++){
+        res[j]=count;
+        count++;
+    }
+    var left=0;
+    var right=1;
+    var sum=0;
+    while(left<right&&right<res.length){
+        for(var i=left;i<=right;++i){
+            sum+=res[i];
+        }
+        if(sum<target){
+            right++;
+        }
+        else if(sum>target){
+            left++;
+        }
+        else{
+            ans.push(res.slice(left,right+1));
+            right++;
+        }
+        temp=[];
+        sum=0;
+    }
+    return ans;
+};
+```
+
+
+
+
+
 ## 最大子序和
 
 给定一个整数数组 nums ，找到一个具有最大和的连续子数组（子数组最少包含一个元素），返回其最大和。

@@ -651,3 +651,361 @@ var sortList = function(head) {
 
 
 
+## [用队列实现栈](https://leetcode-cn.com/problems/implement-stack-using-queues/)
+
+使用队列实现栈的下列操作：
+
+push(x) -- 元素 x 入栈
+pop() -- 移除栈顶元素
+top() -- 获取栈顶元素
+empty() -- 返回栈是否为空
+
+注意:
+
+你只能使用队列的基本操作-- 也就是 push to back, peek/pop from front, size, 和 is empty 这些操作是合法的。
+你所使用的语言也许不支持队列。 你可以使用 list 或者 deque（双端队列）来模拟一个队列 , 只要是标准的队列操作即可。
+你可以假设所有操作都是有效的（例如, 对一个空的栈不会调用 pop 或者 top 操作）。
+
+
+
+思路：
+
+这题用双队列是没有用的。因为两个队列都是先进先出，没有把内部的元素翻转过来。所以应该声明一个队列，然后每次对队列push数据的时候，要把在这个数据之前的数据数量记录下来，将它们pop掉再插入队列末尾。
+
+
+
+题解：
+
+```c++
+class MyStack {
+private:
+    queue<int> q;
+
+public:
+    /** Initialize your data structure here. */
+    MyStack() {
+    }
+    
+    /** Push element x onto stack. */
+    void push(int x) {
+        int count=q.size();
+        q.push(x);
+        while(count--){
+            int temp=q.front();
+            q.pop();
+            q.push(temp);
+        }
+    }
+    
+    /** Removes the element on top of the stack and returns that element. */
+    int pop() {
+        int res=q.front();
+        q.pop();
+        return res;
+    }
+    
+    /** Get the top element. */
+    int top() {
+        return q.front();
+    }
+    
+    /** Returns whether the stack is empty. */
+    bool empty() {
+        return q.empty()?true:false;
+    }
+};
+
+/**
+ * Your MyStack object will be instantiated and called as such:
+ * MyStack* obj = new MyStack();
+ * obj->push(x);
+ * int param_2 = obj->pop();
+ * int param_3 = obj->top();
+ * bool param_4 = obj->empty();
+ */
+```
+
+
+
+
+
+## [有效的括号](https://leetcode-cn.com/problems/valid-parentheses/)
+
+给定一个只包括 '('，')'，'{'，'}'，'['，']' 的字符串，判断字符串是否有效。
+
+有效字符串需满足：
+
+左括号必须用相同类型的右括号闭合。
+左括号必须以正确的顺序闭合。
+注意空字符串可被认为是有效字符串。
+
+```
+示例 1:
+输入: "()"
+输出: true
+
+示例 2:
+输入: "()[]{}"
+输出: true
+
+示例 3:
+输入: "(]"
+输出: false
+
+示例 4:
+输入: "([)]"
+输出: false
+
+示例 5:
+输入: "{[]}"
+输出: true
+```
+
+
+
+思路：
+这题明显是stack的思想。如果是左括号（括号，方括号，花括号），那就压入栈；如果是右括号，就获取当前栈顶元素，如果栈顶元素和这个右括号恰好是匹配的，则pop()，如果不是则return false。如果一一配对之后，stack最后应该是为空的，如果不为空就说明有符号单出来了。还有一些临界条件需要注意：比如")"、")["、""。
+
+如果是要写输入输出用例，则最好写个函数来封装这个判断过程。
+
+
+
+题解：
+
+```c++
+class Solution {
+public:
+    bool isValid(string str) {
+        stack<char> s;
+        int len=str.length();
+        if(len==0){
+            return true;
+        }
+        for(int i=0;i<len;++i){
+            if(str[i]=='['||str[i]=='('||str[i]=='{'){
+                s.push(str[i]);
+            }
+            else if(str[i]==']'||str[i]==')'||str[i]=='}'){
+                if(s.empty()){
+                    return false;
+                }
+                else{
+                    if(s.top()=='['&&str[i]==']'){
+                    s.pop();
+                    }
+                    else if(s.top()=='('&&str[i]==')'){
+                        s.pop();
+                    }
+                    else if(s.top()=='{'&&str[i]=='}'){
+                        s.pop();
+                    }
+                    else{
+                        return false;
+                    }   
+                }
+            }
+        }
+        if(s.empty()){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+};
+```
+
+
+
+
+
+## [腐烂的橘子](https://leetcode-cn.com/problems/rotting-oranges/)
+
+在给定的网格中，每个单元格可以有以下三个值之一：
+
+值 0 代表空单元格；
+值 1 代表新鲜橘子；
+值 2 代表腐烂的橘子。
+每分钟，任何与腐烂的橘子（在 4 个正方向上）相邻的新鲜橘子都会腐烂。
+
+返回直到单元格中没有新鲜橘子为止所必须经过的最小分钟数。如果不可能，返回 -1。
+
+ ![img](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2019/02/16/oranges.png)
+
+
+
+示例 1：
+
+```
+输入：[[2,1,1],[1,1,0],[0,1,1]]
+输出：4
+示例 2：
+
+输入：[[2,1,1],[0,1,1],[1,0,1]]
+输出：-1
+解释：左下角的橘子（第 2 行， 第 0 列）永远不会腐烂，因为腐烂只会发生在 4 个正向上。
+示例 3：
+
+输入：[[0,2]]
+输出：0
+解释：因为 0 分钟时已经没有新鲜橘子了，所以答案就是 0 。
+```
+
+
+
+
+提示：
+
+```
+1 <= grid.length <= 10
+1 <= grid[0].length <= 10
+grid`[i][j]` 仅为 0、1 或 2
+```
+
+
+
+思路：
+
+广度优先搜索。广度优先搜索的话一般会使用队列的思想，最主要还有如何去控制节点去上下左右遍历，所以我们要设置一个locs数组为：[[0,-1],[0,1],[1,0],[-1,0]]，在遍历每个队列元素时，都让它去和locs数组的每个元素进行相加减，得到这个元素上下左右的元素，将为1的元素（即新鲜橙子），变为2（即腐烂橙子）。因为我们要计算时间，但又不能将循环次数用来计时，所以我们将时间和节点的x，y坐标一齐作为一个元素进入队列。
+
+
+
+题解：
+
+```js
+/**
+ * @param {number[][]} grid
+ * @return {number}
+ */
+var orangesRotting = function(grid) {
+    var row=grid.length;
+    var col=grid[0].length;
+    var queue=[];
+    var locs=[[0,-1],[0,1],[1,0],[-1,0]];
+    var time=0;
+    var x,y;
+    for(var i=0;i<row;++i){
+        for(var j=0;j<col;++j){
+            if(grid[i][j]==2){
+                queue.push([i,j,time]);
+            }
+        }
+    }
+    while(queue.length!==0){
+        //这是queue！！不要写成stack,先进先出是用shift
+        [x,y,time]=queue.shift();
+        for(var t=0;t<locs.length;++t){
+            var new_x=x+locs[t][0];
+            var new_y=y+locs[t][1];
+            if(new_x>=0&&new_x<row&&new_y>=0&&new_y<col){
+                if(grid[new_x][new_y]===1){
+                    queue.push([new_x,new_y,time+1]);
+                    grid[new_x][new_y]=2;
+                }
+            }
+        }
+    }
+    for(var p=0;p<row;++p){
+        for(var q=0;q<col;++q){
+            if(grid[p][q]==1){
+                return -1;
+            }
+        }
+    }
+    return time;
+};
+```
+
+
+
+
+
+## [分糖果 II](https://leetcode-cn.com/problems/distribute-candies-to-people/)
+
+排排坐，分糖果。
+
+我们买了一些糖果 candies，打算把它们分给排好队的 n = num_people 个小朋友。
+
+给第一个小朋友 1 颗糖果，第二个小朋友 2 颗，依此类推，直到给最后一个小朋友 n 颗糖果。
+
+然后，我们再回到队伍的起点，给第一个小朋友 n + 1 颗糖果，第二个小朋友 n + 2 颗，依此类推，直到给最后一个小朋友 2 * n 颗糖果。
+
+重复上述过程（每次都比上一次多给出一颗糖果，当到达队伍终点后再次从队伍起点开始），直到我们分完所有的糖果。注意，就算我们手中的剩下糖果数不够（不比前一次发出的糖果多），这些糖果也会全部发给当前的小朋友。
+
+返回一个长度为 num_people、元素之和为 candies 的数组，以表示糖果的最终分发情况（即 ans[i] 表示第 i 个小朋友分到的糖果数）。
+
+ 
+
+示例 1：
+
+```
+输入：candies = 7, num_people = 4
+输出：[1,2,3,1]
+解释：
+第一次，ans[0] += 1，数组变为 [1,0,0,0]。
+第二次，ans[1] += 2，数组变为 [1,2,0,0]。
+第三次，ans[2] += 3，数组变为 [1,2,3,0]。
+第四次，ans[3] += 1（因为此时只剩下 1 颗糖果），最终数组变为 [1,2,3,1]。
+```
+
+
+
+示例 2：
+
+```
+输入：candies = 10, num_people = 3
+输出：[5,2,3]
+解释：
+第一次，ans[0] += 1，数组变为 [1,0,0]。
+第二次，ans[1] += 2，数组变为 [1,2,0]。
+第三次，ans[2] += 3，数组变为 [1,2,3]。
+第四次，ans[0] += 4，最终数组变为 [5,2,3]。
+```
+
+
+
+
+提示：
+
+1 <= candies <= 10^9
+1 <= num_people <= 1000
+
+
+
+思路：
+
+这题的关键是怎么去对数组进行循环。要用到取模的思想，使用取模可以使得对数组进行循环遍历。
+
+
+
+题解：
+
+```js
+/**
+ * @param {number} candies
+ * @param {number} num_people
+ * @return {number[]}
+ */
+var distributeCandies = function(candies, num_people) {
+    var res=[];
+    for(var k=0;k<num_people;++k){
+        res[k]=0;
+    }
+    var cur=0;
+    var count=1;
+    while(candies>0){
+        if(count<candies){
+            res[cur%num_people]+=count;
+            candies-=count;
+            count++;
+            cur++;
+        }
+        else{
+            res[cur%num_people]+=candies;
+            candies=0;
+        }
+    }
+    return res;
+};
+```
+

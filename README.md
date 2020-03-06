@@ -529,6 +529,70 @@ public:
 
 
 
+## [反转链表 II](https://leetcode-cn.com/problems/reverse-linked-list-ii/)
+
+反转从位置 m 到 n 的链表。请使用一趟扫描完成反转。
+
+说明:
+1 ≤ m ≤ n ≤ 链表长度。
+
+示例:
+
+```
+输入: 1->2->3->4->5->NULL, m = 2, n = 4
+输出: 1->4->3->2->5->NULL
+```
+
+
+
+思路：
+
+原本的链表为：1->2->3->4->5，那我们先将链表翻转为1->3->2->4->5，然后再将链表翻转为1->4->3->2->5。重点是要记录要翻转链表之前的节点pre，还有链表的第一个结点head，还有head的下一个节点`nex`。
+
+![image-20200303112123083](C:\Users\alice\AppData\Roaming\Typora\typora-user-images\image-20200303112123083.png)
+
+
+
+
+
+题解：
+
+```js
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val) {
+ *     this.val = val;
+ *     this.next = null;
+ * }
+ */
+/**
+ * @param {ListNode} head
+ * @param {number} m
+ * @param {number} n
+ * @return {ListNode}
+ */
+var reverseBetween = function(head, m, n) {
+    var dummy=new ListNode(0);
+    dummy.next=head;
+    var pre=dummy;
+    for(var i=1;i<m;++i){
+        pre=pre.next;
+    }
+    var head=pre.next;
+    for(var j=m;j<n;++j){
+        var nex=head.next;
+        head.next=nex.next;
+        nex.next=pre.next;
+        pre.next=nex;
+    }
+    return dummy.next;
+};
+```
+
+
+
+
+
 
 
 ### 两数相加
