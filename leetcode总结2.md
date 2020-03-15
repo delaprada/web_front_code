@@ -274,6 +274,70 @@ var coinChange = function(coins, amount) {
 
 
 
+## [最长上升子序列](https://leetcode-cn.com/problems/longest-increasing-subsequence/)
+
+给定一个无序的整数数组，找到其中最长上升子序列的长度。
+
+示例:
+
+```
+输入: [10,9,2,5,3,7,101,18]
+输出: 4 
+解释: 最长的上升子序列是 [2,3,7,101]，它的长度是 4。
+```
+
+
+
+说明:
+
+可能会有多种最长上升子序列的组合，你只需要输出对应的长度即可。
+你算法的时间复杂度应该为 O(n2) 。
+进阶: 你能将算法的时间复杂度降低到 O(n log n) 吗?
+
+
+
+思路：
+
+动态规划的思想。先初始化每个元素的最大上升子序列长度为1。当前元素的最大上升子序列数应为在它前面比该元素小的元素的最大上升子序列数的最大值+1。
+
+
+
+题解：
+
+```js
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+var lengthOfLIS = function(nums) {
+    if(nums.length==0){
+        return 0;
+    }
+    var dp=[];
+    for(var i=0;i<nums.length;++i){
+        dp[i]=1;
+    }
+    for(var j=0;j<nums.length;++j){
+        for(var k=0;k<j;++k){
+            if(nums[j]>nums[k]){
+                dp[j]=Math.max(dp[k]+1,dp[j]);
+            }
+        }
+    }
+    var res=1;
+    for(var p=0;p<nums.length;++p){
+        if(dp[p]>res){
+            res=dp[p];
+        }
+    }
+    return res;
+};
+```
+
+
+
+
+
 
 
 ## [子集](https://leetcode-cn.com/problems/subsets/)
@@ -920,6 +984,100 @@ var orangesRotting = function(grid) {
 
 
 
+## [岛屿的最大面积](https://leetcode-cn.com/problems/max-area-of-island/)
+
+给定一个包含了一些 0 和 1的非空二维数组 grid , 一个 岛屿 是由四个方向 (水平或垂直) 的 1 (代表土地) 构成的组合。你可以假设二维矩阵的四个边缘都被水包围着。
+
+找到给定的二维数组中最大的岛屿面积。(如果没有岛屿，则返回面积为0。)
+
+示例 1:
+
+```
+[[0,0,1,0,0,0,0,1,0,0,0,0,0],
+ [0,0,0,0,0,0,0,1,1,1,0,0,0],
+ [0,1,1,0,1,0,0,0,0,0,0,0,0],
+ [0,1,0,0,1,1,0,0,1,0,1,0,0],
+ [0,1,0,0,1,1,0,0,1,1,1,0,0],
+ [0,0,0,0,0,0,0,0,0,0,1,0,0],
+ [0,0,0,0,0,0,0,1,1,1,0,0,0],
+ [0,0,0,0,0,0,0,1,1,0,0,0,0]]
+```
+
+对于上面这个给定矩阵应返回 6。注意答案不应该是11，因为岛屿只能包含水平或垂直的四个方向的‘1’。
+
+
+
+示例 2:
+
+```
+[[0,0,0,0,0,0,0,0]]
+```
+
+对于上面这个给定的矩阵, 返回 0。
+
+注意: 给定的矩阵grid 的长度和宽度都不超过 50。
+
+
+
+思路：
+和腐烂的橘子的思想类似，使用广度优先遍历，然后queue来实现（JS中用普通数组，使用shift来获取列头元素，不要写错成pop()，c++中队列的pop()和JS中普通数组的shift()才是对应的）。而且要另外维护一个flag数组，用来记录每个数组中的元素是否已经判断过了，如果判断过了的话，就要将flag变为true，下一次不用再去判断。
+
+
+
+题解：
+
+```js
+/**
+ * @param {number[][]} grid
+ * @return {number}
+ */
+var maxAreaOfIsland = function(grid) {
+    var q=[];
+    var res=0;
+    var count=0;
+    var step=[[-1,0],[1,0],[0,1],[0,-1]]; //用来进行广度遍历
+    var flag=new Array();
+    for(var n=0;n<grid.length;++n){
+        flag[n]=new Array();
+        for(var m=0;m<grid[0].length;++m){
+            flag[n][m]=false;
+        }
+    }
+    for(var i=0;i<grid.length;++i){
+        for(var j=0;j<grid[0].length;++j){
+            if(grid[i][j]==1&&flag[i][j]==false){
+                count++;
+                q.push([i,j]);
+                flag[i][j]=true;
+                while(q.length!==0){
+                    var temp=q.shift();
+                    for(var k=0;k<step.length;++k){
+                        var x=temp[0]+step[k][0];
+                        var y=temp[1]+step[k][1];
+                        if(x>=0&&x<grid.length&&y>=0&&y<grid[0].length){
+                            if(grid[x][y]==1&&flag[x][y]==false){
+                                q.push([x,y]);
+                                flag[x][y]=true;
+                                count++;
+                            }  
+                        }
+                    } 
+                }
+                if(count>res){
+                    res=count;
+                }
+                count=0;
+            }
+        }
+    }
+    return res;
+};
+```
+
+
+
+
+
 ## [分糖果 II](https://leetcode-cn.com/problems/distribute-candies-to-people/)
 
 排排坐，分糖果。
@@ -1006,6 +1164,106 @@ var distributeCandies = function(candies, num_people) {
         }
     }
     return res;
+};
+```
+
+
+
+
+
+## [将数组分成和相等的三个部分](https://leetcode-cn.com/problems/partition-array-into-three-parts-with-equal-sum/)
+
+给你一个整数数组 A，只有可以将其划分为三个和相等的非空部分时才返回 true，否则返回 false。
+
+形式上，如果可以找出索引 i+1 < j 且满足 (A[0] + A[1] + ... + A[i] == A[i+1] + A[i+2] + ... + A[j-1] == A[j] + A[j-1] + ... + A[A.length - 1]) 就可以将数组三等分。
+
+ 
+
+示例 1：
+
+```
+输出：[0,2,1,-6,6,-7,9,1,2,0,1]
+输出：true
+解释：0 + 2 + 1 = -6 + 6 - 7 + 9 + 1 = 2 + 0 + 1
+```
+
+示例 2：
+
+```
+输入：[0,2,1,-6,6,7,9,-1,2,0,1]
+输出：false
+```
+
+示例 3：
+
+```
+输入：[3,3,6,5,-2,2,5,1,-9,4]
+输出：true
+解释：3 + 3 = 6 = 5 - 2 + 2 + 5 + 1 - 9 + 4
+```
+
+
+提示：
+
+```
+3 <= A.length <= 50000
+-10^4 <= A[i] <= 10^4
+```
+
+
+
+思路：
+
+一开始可能想到的是左右指针，但是移动左右指针的时候会出现一些问题，比如应该移动哪个指针，根据什么标准，因为相等的话，不能简单地比较大小来决定如何移动，所以只有两个指针是不够的。
+
+首先应该计算整个数组的和能否除以3，如果可以的话，那如果能分成三个部分，那每个部分的值应该都是这个和除以3。
+
+
+
+题解：
+
+```js
+/**
+ * @param {number[]} A
+ * @return {boolean}
+ */
+var canThreePartsEqualSum = function(A) {
+    var i=0;
+    var j=A.length-1;
+    var sum1=A[i];
+    var sum2=A[j];
+    var sum=0;
+    for(var k=0;k<A.length;++k){
+        sum+=A[k];
+    }
+    if(sum%3!=0){
+        return false;
+    }
+    var partition=sum/3;
+    while(i<j){
+        if(sum1!==partition){
+            i++;
+            if(i<j){
+                sum1+=A[i];
+            }
+        }
+        if(sum2!==partition){
+            j--;
+            if(j>i){
+                sum2+=A[j];
+            }
+        }
+        if(sum1==partition&&sum2==partition){
+            break;
+        }
+    }
+    //判断i和j之间是否有数
+    if(sum1==partition&&sum2==partition&&j!=i+1){
+        return true;
+    }
+    else{
+        return false;
+    }
 };
 ```
 
