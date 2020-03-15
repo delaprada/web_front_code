@@ -1022,6 +1022,19 @@ var orangesRotting = function(grid) {
 思路：
 和腐烂的橘子的思想类似，使用广度优先遍历，然后queue来实现（JS中用普通数组，使用shift来获取列头元素，不要写错成pop()，c++中队列的pop()和JS中普通数组的shift()才是对应的）。而且要另外维护一个flag数组，用来记录每个数组中的元素是否已经判断过了，如果判断过了的话，就要将flag变为true，下一次不用再去判断。
 
+用JS声明二维数组的方式：
+
+```js
+var a = new Array();
+
+for(var i=0;i<3;i++){        //一维长度为3
+	a[i] = new Array();
+	for(var j=0;j<5;j++){    //二维长度为5
+		a[i][j] = i+j;
+	}
+}
+```
+
 
 
 题解：
