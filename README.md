@@ -127,6 +127,52 @@ public:
 
 
 
+### 二叉树深度（非递归）
+
+```c++
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    int maxDepth(TreeNode* root) {
+        //非递归
+        if(root==NULL){
+            return 0;
+        }
+        queue<TreeNode*> q;
+        int len;
+        int height;
+        q.push(root);
+        while(!q.empty()){
+            len=q.size();
+            height++;
+            while(len--){
+                TreeNode* cur=q.front();
+                q.pop();
+                if(cur->left){
+                    q.push(cur->left);
+                }
+                if(cur->right){
+                    q.push(cur->right);
+                }
+            }
+        }
+        return height;
+    }
+};
+```
+
+
+
+
+
 ### 二叉树镜像
 
 关键点：
