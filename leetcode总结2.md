@@ -1331,3 +1331,94 @@ var isRectangleOverlap = function(rec1, rec2) {
     return !(rec1[2]<=rec2[0]||rec2[2]<=rec1[0]||rec1[1]>=rec2[3]||rec2[1]>=rec1[3]);
 };
 ```
+
+
+
+
+
+
+
+## [水壶问题](https://leetcode-cn.com/problems/water-and-jug-problem/)
+
+有两个容量分别为 *x*升 和 *y*升 的水壶以及无限多的水。请判断能否通过使用这两个水壶，从而可以得到恰好 *z*升 的水？
+
+如果可以，最后请用以上水壶中的一或两个来盛放取得的 *z升* 水。
+
+你允许：
+
+- 装满任意一个水壶
+- 清空任意一个水壶
+- 从一个水壶向另外一个水壶倒水，直到装满或者倒空
+
+**示例 1:** (From the famous [*"Die Hard"* example](https://www.youtube.com/watch?v=BVtQNK_ZUJg))
+
+```
+输入: x = 3, y = 5, z = 4
+输出: True
+```
+
+**示例 2:**
+
+```
+输入: x = 2, y = 6, z = 5
+输出: False
+```
+
+
+
+思路：
+
+当x=3,y=5,z=4的时候怎么倒出4L水：
+
+- 首先装满x，将x中的3L水倒入y中，
+- 然后再装满x，将x的水倒入y中，此时只能倒2L，那x中就剩下1L水
+- 将y中的水倒掉，将x中的1L水倒入
+- x再装满3L水，倒入y中，此时y就有4L水
+
+它的思路就是：x和y的最大公约数是否能够被z整除。与此同时要考虑，x和y加起来的大小是否比z要小，如果小的话就不可能装得下。还要考虑，两个壶为0的情况，因为mod操作是不能mod0的。
+
+
+
+题解：
+
+```js
+/**
+ * @param {number} x
+ * @param {number} y
+ * @param {number} z
+ * @return {boolean}
+ */
+var canMeasureWater = function(x, y, z) {
+    var temp;
+    if(x>y){
+        temp=x;
+        x=y;
+        y=temp;
+    }
+    if(x+y<z){
+        return false;
+    }
+    while(x!=0){
+        temp=y;
+        y=x;
+        x=temp%x;
+    }
+    if(y==0&&z==0){
+        return true;
+    }
+    else if(y==0&&z!=0){
+        return false;
+    }
+    else{
+        if(z%y==0){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+};
+```
+
+
+
