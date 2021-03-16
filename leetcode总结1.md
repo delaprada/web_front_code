@@ -717,6 +717,47 @@ var longestPalindrome = function(s) {
 
 
 
+```javascript
+// 解法二
+// 用了辅助函数去寻找回文子串，代码更清晰
+/**
+ * @param {string} s
+ * @return {string}
+ */
+var longestPalindrome = function(s) {
+    let res = ""; // 记录最长回文串
+
+    // 穷举以所有点（奇数一个点，偶数两个点）为中心的回文串
+    for(let i = 0; i < s.length; ++i) {
+        // 当回文串是奇数时，由一个中心点向两边扩散
+        const str1 = palindrome(s, i, i);
+        
+        // 当回文串是偶数时，由中间的两个中心点向两边扩散
+        const str2 = palindrome(s, i, i + 1);
+
+        res = res.length > str1.length ? res : str1;
+        res = res.length > str2.length ? res : str2; 
+    }
+
+    return res;
+};
+
+// 寻找回文串
+const palindrome = (s, left, right) => {
+    while(left >= 0 && right < s.length) {
+        if(s[left] === s[right]) {
+            left--;
+            right++;
+        } else {
+            break;
+        }
+    }
+    return s.slice(left + 1, right);
+}
+```
+
+
+
 ## 回文数
 
 判断一个整数是否是回文数。回文数是指正序（从左向右）和倒序（从右向左）读都是一样的整数。

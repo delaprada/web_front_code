@@ -338,3 +338,106 @@ const findKth = (nums1, i, nums2, j, k) => {
     }
 }
 ```
+
+
+
+## [6. Z 字形变换](https://leetcode-cn.com/problems/zigzag-conversion/)
+
+将一个给定字符串 s 根据给定的行数 numRows ，以从上往下、从左到右进行 Z 字形排列。
+
+比如输入字符串为 "PAYPALISHIRING" 行数为 3 时，排列如下：
+
+```
+P   A   H   N
+A P L S I I G
+Y   I   R
+```
+
+之后，你的输出需要从左往右逐行读取，产生出一个新的字符串，比如：`"PAHNAPLSIIGYIR"`。
+
+请你实现这个将字符串进行指定行数变换的函数：
+
+```
+string convert(string s, int numRows);
+```
+
+
+
+**示例 1：**
+
+```
+输入：s = "PAYPALISHIRING", numRows = 3
+输出："PAHNAPLSIIGYIR"
+```
+
+
+
+**示例 2：**
+
+```
+输入：s = "PAYPALISHIRING", numRows = 4
+输出："PINALSIGYAHRPI"
+解释：
+P     I    N
+A   L S  I G
+Y A   H R
+P     I
+```
+
+
+
+**示例 3：**
+
+```
+输入：s = "A", numRows = 1
+输出："A"
+```
+
+
+
+```javascript
+/**
+ * @param {string} s
+ * @param {number} numRows
+ * @return {string}
+ */
+
+// 找规律
+var convert = function(s, numRows) {
+    let temp = [];
+    let res = "";
+    for(let i = 0; i < numRows; ++i) {
+        temp[i] = new Array();
+    }
+
+    if(s.length === 0 || numRows < 1) {
+        return res;
+    }
+
+    if(numRows === 1) {
+        return s;
+    }
+
+    for(let j = 0; j < s.length; ++j) {
+        let ans = Math.floor(j / (numRows - 1));
+        let cur = j % (numRows - 1);
+
+        if(ans % 2 === 0) {
+            temp[cur].push(s[j]); // 按余数正序保存
+        }
+
+        if(ans % 2 !== 0) {
+            temp[numRows - 1 - cur].push(s[j]); // 按余数倒序保存
+        }
+    }
+    for(let k = 0; k < temp.length; ++k) {
+        res += temp[k].join('');
+    }
+    return res;
+};
+```
+
+![](https://delaprada-1301716802.cos.ap-guangzhou.myqcloud.com/20210316101241.png)\
+
+
+
